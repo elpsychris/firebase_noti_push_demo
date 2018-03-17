@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class AndroidPushNotiService {
+public class NotiService {
     private static final String FB_SERVER_KEY = "AIzaSyAdDJpSKVRi7IAUelQ2PYJCDG1gyBt1Xls";
     private static final String FB_API_URL = "https://fcm.googleapis.com/fcm/send";
     // TODO: For reference
