@@ -34,13 +34,19 @@ public class WebController {
     }
 
     @RequestMapping(value = "/requests-waiting", method = RequestMethod.DELETE, consumes = APPLICATION_JSON_VALUE)
-    public boolean checkoutWaiting(@RequestBody Request request) {
+    public boolean checkoutWaiting(@RequestBody List<Request> request) {
         System.out.println("Received new CHECKOUT waiting request");
         return requestHandler.checkoutWaitingRequest(request);
     }
 
     @RequestMapping(value = "/requests-ready", method = RequestMethod.DELETE, consumes = APPLICATION_JSON_VALUE)
-    public boolean checkoutReady(@RequestBody Request request) {
+    public boolean checkoutReady(@RequestBody List<Request> request) {
+        System.out.println("Received new CHECKOUT ready request");
+        return requestHandler.checkoutReadyRequest(request);
+    }
+
+    @RequestMapping(value = "/requests/{receiptSeq}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    public boolean getAllRequests(@RequestBody List<Request> request) {
         System.out.println("Received new CHECKOUT ready request");
         return requestHandler.checkoutReadyRequest(request);
     }

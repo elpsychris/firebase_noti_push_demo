@@ -13,7 +13,7 @@ public class SimWorker implements Runnable {
     private ReadyQueueService readyQueue;
     private NotiService notiService;
 
-    private final long TIME_OUT = 30000;
+    private final long TIME_OUT = 300000;
     private final long MAX_QUEUE = 5;
 
     public SimWorker(WaitingQueueService waitingQueue, ReadyQueueService readyQueue, NotiService notiService) {

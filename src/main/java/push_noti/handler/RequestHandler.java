@@ -12,6 +12,7 @@ public class RequestHandler {
     private ReadyQueueService readyQueueService;
     private WaitingQueueService waitingQueueService;
     private NotiService notiService;
+    private boolean needReQuery = true;
 
     public RequestHandler(WaitingQueueService waitingQueueService, ReadyQueueService readyQueueService, NotiService notiService) {
         this.waitingQueueService = waitingQueueService;
@@ -30,21 +31,32 @@ public class RequestHandler {
         return readyQueueService.getAllRequest();
     }
 
-    public boolean checkoutWaitingRequest(Request request) {
-        Request confirm = waitingQueueService.checkoutRequest(request);
-        if (confirm != null) {
+    public boolean checkoutWaitingRequest(List<Request> requestList) {
+        for (Request request : requestList) {
+            // Check if the request is really in waiting queue
+            Request confirm = waitingQueueService.checkoutRequest(request);
+            if (confirm == null) return false;
+            // Add the request to ready queue
             long result = readyQueueService.checkinRequest(request);
-            if (result > 0) {
-                notiService.notifyAllSubscriber(request);
-                return true;
+            if (result < 0) {
+                return false;
             }
+
+            // broadcast notification to channel
+            notiService.notifyAllSubscriber(request);
         }
-        return false;
+        return true;
     }
 
-    public boolean checkoutReadyRequest(Request request) {
-        Request confirm = readyQueueService.checkoutRequest(request);
-        return confirm != null;
+    public boolean checkoutReadyRequest(List<Request> requestList) {
+        for (Request request : requestList) {
+            request.setSeq(-1);
+            Request confirm = readyQueueService.checkoutRequest(request);
+            if (confirm == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
 //    public void addNewRequestList(String receiptSeq, List<Request> requestList, String subscriberId) {

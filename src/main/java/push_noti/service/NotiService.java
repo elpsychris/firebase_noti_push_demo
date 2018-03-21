@@ -50,50 +50,51 @@ public class NotiService {
 
     }
 
-    public ResponseEntity<String> notifyAllSubscriber(Request request) {
-        if (request == null) {
-            return new ResponseEntity("OK", OK);
-        }
-        ObjectMapper mapper = new ObjectMapper();
-
-        JSONObject body = new JSONObject();
-        body.put("to", "/topics/" + request.getReceiptSeq());
-        body.put("priority", "HIGH");
-
-        JSONObject noti = new JSONObject();
-        noti.put("title", "Check your request tab!");
-        noti.put("body", "New dish is awaiting to be served");
-
-        try {
-            String json = mapper.writeValueAsString(request.getSubscribers().toArray());
-            noti.put("registration_ids", json);
-
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-//        JSONObject data = new JSONObject();
-//        noti.put("Key-1", "Data sample 1");
-//        noti.put("Key-2", "Data sample 2");
-
-        body.put("notification", noti);
-//        body.put("data", data);
-
-
-        HttpEntity<String> fbReq = new HttpEntity<>(body.toString());
-
-        CompletableFuture<String> pushNoti = send(fbReq);
-        CompletableFuture.allOf(pushNoti).join();
-
-        try {
-            String fbRes = pushNoti.get();
-            return new ResponseEntity<>(fbRes, OK);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>("Push Noti ERROR!", HttpStatus.BAD_REQUEST);
+    public void notifyAllSubscriber(Request request) {
+        System.out.println("Notify all clients");
+//        if (request == null) {
+//            return new ResponseEntity("OK", OK);
+//        }
+//        ObjectMapper mapper = new ObjectMapper();
+//
+//        JSONObject body = new JSONObject();
+//        body.put("to", "/topics/" + request.getReceiptSeq());
+//        body.put("priority", "HIGH");
+//
+//        JSONObject noti = new JSONObject();
+//        noti.put("title", "Check your request tab!");
+//        noti.put("body", "New dish is awaiting to be served");
+//
+//        try {
+//            String json = mapper.writeValueAsString(request.getSubscribers().toArray());
+//            noti.put("registration_ids", json);
+//
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//
+////        JSONObject data = new JSONObject();
+////        noti.put("Key-1", "Data sample 1");
+////        noti.put("Key-2", "Data sample 2");
+//
+//        body.put("notification", noti);
+////        body.put("data", data);
+//
+//
+//        HttpEntity<String> fbReq = new HttpEntity<>(body.toString());
+//
+//        CompletableFuture<String> pushNoti = send(fbReq);
+//        CompletableFuture.allOf(pushNoti).join();
+//
+//        try {
+//            String fbRes = pushNoti.get();
+//            return new ResponseEntity<>(fbRes, OK);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        }
+//        return new ResponseEntity<>("Push Noti ERROR!", HttpStatus.BAD_REQUEST);
     }
 
 }
