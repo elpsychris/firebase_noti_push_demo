@@ -8,6 +8,6 @@
         fetchRegistry: true
         registryFetchIntervalSeconds: 5
         serviceUrl:
-          defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+          defaultZone: ${EUREKA_URI:http://192.168.100.37:8761/eureka}
       instance:
         preferIpAddress: true

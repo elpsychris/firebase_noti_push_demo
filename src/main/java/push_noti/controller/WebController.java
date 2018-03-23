@@ -46,14 +46,19 @@ public class WebController {
     }
 
     @RequestMapping(value = "/requests/{receiptSeq}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    public boolean getAllRequests(@RequestBody List<Request> request) {
+    public List<Request> getAllRequests(@PathVariable long receiptSeq) {
         System.out.println("Received new CHECKOUT ready request");
-        return requestHandler.checkoutReadyRequest(request);
+        return requestHandler.getAllRequest(receiptSeq);
     }
 
     @RequestMapping(value = "/requests-waiting", method = RequestMethod.GET)
     public List<Request> getWaitingRequests() {
         return requestHandler.getAllWaitingRequests();
+    }
+
+    @RequestMapping(value = "/requests-waiting", method = RequestMethod.PUT, consumes = APPLICATION_JSON_VALUE)
+    public boolean modifyWaitingRequests(@RequestBody Request request) {
+        return requestHandler.modifyWaiting(request);
     }
 
     @RequestMapping(value = "/requests-ready", method = RequestMethod.GET)

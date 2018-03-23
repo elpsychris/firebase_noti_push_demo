@@ -8,4 +8,9 @@ public class ReadyRequestQueueAdapter extends RequestQueueAdapter {
     public ReadyRequestQueueAdapter() {
         super("#READY");
     }
+
+    @Override
+    public String getCurHash() {
+        return super.getCurHash();
+    }
 }

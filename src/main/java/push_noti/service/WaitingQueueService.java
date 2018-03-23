@@ -27,5 +27,18 @@ public class WaitingQueueService {
     public Request checkoutRequest() {
         return waitingRequestQueueAdapter.popRequest();
     }
+
+    public String getCurHash() {
+        return waitingRequestQueueAdapter.getCurHash();
+    }
+
+    public Request removeRequest(Request request) {
+        return waitingRequestQueueAdapter.removeRequest(request);
+    }
+
+    public boolean modifyRequest(Request request) {
+        long seq = request.getSeq();
+        return waitingRequestQueueAdapter.modifyRequest(seq, request);
+    }
 }
 

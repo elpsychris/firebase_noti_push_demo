@@ -6,13 +6,16 @@ import push_noti.service.NotiService;
 import push_noti.service.ReadyQueueService;
 import push_noti.service.WaitingQueueService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RequestHandler {
     private ReadyQueueService readyQueueService;
     private WaitingQueueService waitingQueueService;
     private NotiService notiService;
-    private boolean needReQuery = true;
+    private List<Request> cachedRequestList = new ArrayList<>();
+    private String curWaitingHash = "";
+    private String curReadyHash = "";
 
     public RequestHandler(WaitingQueueService waitingQueueService, ReadyQueueService readyQueueService, NotiService notiService) {
         this.waitingQueueService = waitingQueueService;
@@ -57,6 +60,46 @@ public class RequestHandler {
             }
         }
         return true;
+    }
+
+    public boolean modifyWaiting(Request request) {
+        if (request.getSeq() == 0) {
+            return false;
+        }
+        if (request.getSeq() < 0 || request.getQuantity() < 0) {
+            return false;
+        }
+        if (!request.isChangeable()) {
+            request.setSeq(-1);
+            request.setChangeable(true);
+            boolean isSuccess = null != waitingQueueService.removeRequest(request);
+            if (!isSuccess) return false;
+        } else {
+            return waitingQueueService.modifyRequest(request);
+        }
+        return true;
+    }
+
+    public List<Request> getAllRequest(long receiptSeq) {
+        if (!curReadyHash.equals(readyQueueService.getCurHash()) || !curWaitingHash.equals(waitingQueueService.getCurHash())) {
+            List<Request> readyList = readyQueueService.getAllRequest();
+            List<Request> waitingList = waitingQueueService.getAllRequest();
+
+            this.curWaitingHash = waitingQueueService.getCurHash();
+            this.curReadyHash = readyQueueService.getCurHash();
+
+            cachedRequestList.clear();
+            cachedRequestList.addAll(waitingList);
+            cachedRequestList.addAll(readyList);
+        }
+        List<Request> result = new ArrayList<>();
+        for (Request request : cachedRequestList) {
+            if (request.getReceiptSeq() == receiptSeq) {
+                result.add(request);
+            }
+        }
+
+        return result;
     }
 
 //    public void addNewRequestList(String receiptSeq, List<Request> requestList, String subscriberId) {

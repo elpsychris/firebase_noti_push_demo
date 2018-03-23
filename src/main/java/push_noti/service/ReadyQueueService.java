@@ -26,5 +26,10 @@ public class ReadyQueueService {
     public List<Request> getAllRequest() {
         return readyQueueAdapter.getRequestList();
     }
+
+    public String getCurHash() {
+        return readyQueueAdapter.getCurHash();
+    }
+
 }
 

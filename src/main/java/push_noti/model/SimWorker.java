@@ -13,7 +13,7 @@ public class SimWorker implements Runnable {
     private ReadyQueueService readyQueue;
     private NotiService notiService;
 
-    private final long TIME_OUT = 300000;
+    private final long TIME_OUT = 120000;
     private final long MAX_QUEUE = 5;
 
     public SimWorker(WaitingQueueService waitingQueue, ReadyQueueService readyQueue, NotiService notiService) {
@@ -28,9 +28,14 @@ public class SimWorker implements Runnable {
             try {
                 Request request = waitingQueue.checkoutRequest();
                 if (request != null) {
-                    readyQueue.checkinRequest(request);
+                    System.out.println(request.isChangeable());
+                    request.setChangeable(false);
+                    long id = readyQueue.checkinRequest(request);
+                    System.out.println("=======| %s returned " + id);
                     notiService.notifyAllSubscriber(request);
                     System.out.printf("===========|  %s is ready!\n", request.getItemSeq());
+                } else {
+                    System.out.println("No new request");
                 }
                 Thread.sleep(TIME_OUT);
             } catch (InterruptedException e) {
